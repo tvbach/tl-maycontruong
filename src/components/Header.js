@@ -10,8 +10,8 @@ const Header = () => {
     { name: 'Trang chủ', href: '/' },
     { name: 'Sản phẩm', href: '/products' },
     { name: 'Dịch vụ cho thuê', href: '/buy' },
-    { name: 'Về chúng tôi', href: '/sell' },
-    { name: 'Liên hệ', href: '/rent' },
+    { name: 'Về chúng tôi', href: '/about' },
+    { name: 'Liên hệ', href: '/contact' },
   ];
 
   return (
