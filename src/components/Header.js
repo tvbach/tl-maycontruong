@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import Link from "next/link";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,11 +19,13 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 sm:h-20 md:h-24">
           <div className="flex-shrink-0 flex items-center">
-            <img 
-              src="/images/logo4.jpg" 
-              alt="ThanhLich Logo" 
-              className="h-12 w-24 sm:h-16 sm:w-32 md:h-20 md:w-40 lg:h-24 lg:w-54 object-center"
-            />
+            <Link href="/">
+              <img 
+                src="/images/logo4.jpg" 
+                alt="ThanhLich Logo" 
+                className="h-12 w-24 sm:h-16 sm:w-32 md:h-20 md:w-40 lg:h-24 lg:w-54 object-center"
+              />
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
