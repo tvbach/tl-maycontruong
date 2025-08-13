@@ -1,5 +1,3 @@
-import Image from "next/image";
-import Header from "@/components/Header";
 import Banner from '@/components/home/Banner';
 import AboutCompany from '@/components/home/AboutCompany';
 import NewProducts from '@/components/home/NewProducts';

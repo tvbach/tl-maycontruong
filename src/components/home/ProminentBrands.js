@@ -2,19 +2,19 @@ const ProminentBrands = () => {
   const brands = [
     {
       name: 'Doosan',
-      logo: '/images/brands/doosan.png'
+      logo: 'https://www.mervynlambertplant.co.uk/Storage/Ecommerce/stock/originals/samz0kww.rqo.DX140.jpg'
     },
     {
       name: 'Komatsu',
-      logo: '/images/brands/komatsu.png'
+      logo: 'https://www.komatsuindia.in/templates/mdestemplate/images/81.jpg'
     },
     {
       name: 'HAMM',
-      logo: '/images/brands/hamm.png'
+      logo: 'https://static.global-ce.com/upload/upfs/201901/19/f_1547889426509183.jpg'
     },
     {
       name: 'SDLG',
-      logo: '/images/brands/sdlg.png'
+      logo: 'https://italthaiindustrial.com/wp-content/uploads/2019/08/SDLG-E660FL-00-1024x592.png'
     }
   ];
 

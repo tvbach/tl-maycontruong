@@ -56,7 +56,7 @@ const ContactPage = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Địa Chỉ</h3>
-                  <p className="text-gray-600">123 Đường ABC, Quận XYZ, TP.HCM</p>
+                  <p className="text-gray-600">283 Thị trấn Hùng Sơn - Huyện Đại Từ - Tỉnh Thái Nguyên</p>
                 </div>
               </div>
 
@@ -68,7 +68,7 @@ const ContactPage = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Điện Thoại</h3>
-                  <p className="text-gray-600">0123 456 789</p>
+                  <p className="text-gray-600">0386-684-246</p>
                 </div>
               </div>
 
@@ -80,7 +80,7 @@ const ContactPage = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Email</h3>
-                  <p className="text-gray-600">info@thanhlich.com</p>
+                  <p className="text-gray-600">contact@thanhlich.com</p>
                 </div>
               </div>
             </div>
