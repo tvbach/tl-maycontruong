@@ -30,7 +30,7 @@ const typeOf = (name) => {
   return '';
 };
 
-// Phones and tablets get an SMS (every phone has it); desktops get an email.
+// Phones and tablets get an SMS (every phone has it); desktops copy the request for Zalo.
 const isPhone = () =>
   typeof navigator !== 'undefined' &&
   (/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform)));
@@ -38,13 +38,13 @@ const isPhone = () =>
 /*
   Gửi yêu cầu:
   - Có cấu hình Firebase (.env.local): lưu vào Firestore, xem trong /admin.
-  - Chưa có, hoặc lưu thất bại: soạn sẵn trong Tin nhắn (điện thoại) hoặc Email (máy tính) để khách bấm Gửi.
+  - Chưa có, hoặc lưu thất bại: điện thoại mở Tin nhắn soạn sẵn; máy tính sao chép nội dung để dán vào Zalo.
 */
 const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
 const QuoteForm = ({ title = 'Cần máy cho công trình?', as: Heading = 'h2' }) => {
   const [form, setForm] = useState({ name: '', phone: '', machine: '', mode: 'Thuê', location: '', note: '' });
   const [errors, setErrors] = useState({});
-  const [sent, setSent] = useState(null); // null | { via: 'saved' | 'sms' | 'email', text }
+  const [sent, setSent] = useState(null); // null | { via: 'saved' | 'sms' | 'copy', text }
   const [sending, setSending] = useState(false);
   const [failed, setFailed] = useState(null); // null | text of the request that could not be saved
   const [trap, setTrap] = useState(''); // honeypot: người thật không thấy ô này
@@ -123,14 +123,21 @@ const QuoteForm = ({ title = 'Cần máy cho công trình?', as: Heading = 'h2' 
     openApp(text);
   };
 
-  const openApp = (text) => {
-    const via = isPhone() ? 'sms' : 'email';
-    window.location.href =
-      via === 'sms'
-        ? `sms:${SITE.phone}?&body=${encodeURIComponent(text)}`
-        : `mailto:${SITE.email}?subject=${encodeURIComponent(`Yêu cầu báo giá ${form.machine} - ${form.name}`)}&body=${encodeURIComponent(text)}`;
+  const openApp = async (text) => {
     setCopied(false);
-    setSent({ via, text });
+    if (isPhone()) {
+      window.location.href = `sms:${SITE.phone}?&body=${encodeURIComponent(text)}`;
+      setSent({ via: 'sms', text });
+      return;
+    }
+    // Máy tính: chép sẵn nội dung để dán vào Zalo.
+    setSent({ via: 'copy', text });
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+    } catch {
+      setCopied(false);
+    }
   };
 
   const copy = async () => {
@@ -198,14 +205,21 @@ const QuoteForm = ({ title = 'Cần máy cho công trình?', as: Heading = 'h2' 
                 ) : (
                   <>
                     <h3 className="mt-6 text-3xl">Còn một bước: bấm Gửi</h3>
-                    <p className="mx-auto mt-3 max-w-md">
-                      {sent.via === 'sms'
-                        ? 'Ứng dụng Tin nhắn vừa mở với nội dung yêu cầu gửi tới số của Thanh Lịch. Bấm Gửi trong tin nhắn để hoàn tất.'
-                        : 'Ứng dụng email vừa mở với nội dung yêu cầu. Bấm Gửi trong email để hoàn tất.'}
-                    </p>
-                    <p className="mx-auto mt-3 max-w-md text-muted">
-                      Không thấy ứng dụng nào mở? Sao chép nội dung rồi dán vào Zalo, hoặc gọi thẳng cho chúng tôi.
-                    </p>
+                    {sent.via === 'sms' ? (
+                      <>
+                        <p className="mx-auto mt-3 max-w-md">
+                          Ứng dụng Tin nhắn vừa mở với nội dung yêu cầu gửi tới số của Thanh Lịch. Bấm Gửi trong tin nhắn để hoàn tất.
+                        </p>
+                        <p className="mx-auto mt-3 max-w-md text-muted">
+                          Không thấy ứng dụng nào mở? Sao chép nội dung rồi dán vào Zalo, hoặc gọi thẳng cho chúng tôi.
+                        </p>
+                      </>
+                    ) : (
+                      <p className="mx-auto mt-3 max-w-md">
+                        {copied ? 'Nội dung yêu cầu đã được sao chép.' : 'Bấm Sao chép nội dung bên dưới.'} Mở Zalo, nhắn tới số{' '}
+                        <strong className="text-navy-800">{SITE.phoneDisplay}</strong>, dán nội dung rồi bấm Gửi. Hoặc gọi thẳng cho chúng tôi.
+                      </p>
+                    )}
                   </>
                 )}
                 <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
@@ -313,7 +327,7 @@ const QuoteForm = ({ title = 'Cần máy cho công trình?', as: Heading = 'h2' 
                   <p className="mt-3 text-center text-sm text-muted">
                     {firebaseReady
                       ? 'Số điện thoại của bạn chỉ dùng để gọi lại báo giá.'
-                      : 'Yêu cầu sẽ mở trong ứng dụng Tin nhắn (điện thoại) hoặc Email (máy tính) để bạn bấm gửi.'}
+                      : 'Trên điện thoại, yêu cầu mở trong ứng dụng Tin nhắn; trên máy tính, nội dung được sao chép để gửi qua Zalo.'}
                   </p>
                 </div>
               </form>

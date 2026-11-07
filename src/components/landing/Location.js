@@ -1,5 +1,5 @@
 import { SITE } from '@/data/site';
-import { IconPhone, IconPin, IconMail } from './icons';
+import { IconPhone, IconPin } from './icons';
 
 const Location = ({ as: Heading = 'h2', title = 'Đến xem máy tại bãi' }) => {
   return (
@@ -26,10 +26,6 @@ const Location = ({ as: Heading = 'h2', title = 'Đến xem máy tại bãi' }) 
                 <a href={`tel:${SITE.phone}`} className="font-semibold text-navy-800 hover:underline">{SITE.phoneDisplay}</a>
                 <span className="text-muted"> (gọi hoặc Zalo)</span>
               </dd>
-            </div>
-            <div className="flex gap-4">
-              <dt><IconMail className="h-6 w-6 text-navy-800" /><span className="sr-only">Email</span></dt>
-              <dd><a href={`mailto:${SITE.email}`} className="font-semibold text-navy-800 hover:underline">{SITE.email}</a></dd>
             </div>
           </dl>
         </div>

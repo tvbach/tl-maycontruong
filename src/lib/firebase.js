@@ -15,7 +15,7 @@ const config = {
 };
 
 // Firebase (lưu form vào Firestore + trang /admin) chỉ chạy khi bật NEXT_PUBLIC_ENABLE_ADMIN=true.
-// Khi tắt, form báo giá gửi qua Tin nhắn (điện thoại) hoặc Email (máy tính).
+// Khi tắt, form báo giá mở Tin nhắn (điện thoại) hoặc sao chép nội dung để gửi qua Zalo (máy tính).
 export const firebaseReady =
   process.env.NEXT_PUBLIC_ENABLE_ADMIN === 'true' && Boolean(config.apiKey && config.projectId && config.appId);
 

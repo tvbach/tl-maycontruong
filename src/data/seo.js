@@ -25,7 +25,6 @@ export const businessJsonLd = {
   description: 'Cho thuê theo ca, ngày, tháng và mua bán máy xúc, máy lu, máy ủi đã qua sử dụng tại Thái Nguyên.',
   url: SITE.url,
   telephone: '+84' + SITE.phone.slice(1),
-  email: SITE.email,
   logo: abs('/images/logo.png'),
   image: [IMAGES.hero.src],
   foundingDate: '2003',

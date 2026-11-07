@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { NAV, SITE } from '@/data/site';
 import Brand from '@/components/Brand';
-import { IconPhone, IconPin, IconMail } from '@/components/landing/icons';
+import { IconPhone, IconPin } from '@/components/landing/icons';
 
 const Footer = () => {
   return (
@@ -33,10 +33,6 @@ const Footer = () => {
             <li className="flex gap-3">
               <IconPhone className="mt-0.5 h-5 w-5 shrink-0 text-gold-400" />
               <a href={`tel:${SITE.phone}`} className="font-semibold text-white hover:text-gold-400">{SITE.phoneDisplay}</a>
-            </li>
-            <li className="flex gap-3">
-              <IconMail className="mt-0.5 h-5 w-5 shrink-0 text-gold-400" />
-              <a href={`mailto:${SITE.email}`} className="hover:text-white">{SITE.email}</a>
             </li>
             <li className="flex gap-3">
               <img src="/images/zalo-icon.svg" alt="" className="mt-0.5 h-5 w-5 shrink-0" />
