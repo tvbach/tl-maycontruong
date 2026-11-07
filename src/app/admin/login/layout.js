@@ -1,9 +1,4 @@
+// /admin/login dùng chung <html> của src/app/admin/layout.js.
 export default function LoginLayout({ children }) {
-  return (
-    <html lang="en">
-      <body className="bg-gray-50">
-        { children }
-      </body>
-    </html>
-  );
+  return children;
 }
