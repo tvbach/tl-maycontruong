@@ -1,0 +1,47 @@
+rules_version = '2';
+
+// Quy tắc bảo mật Firestore cho website Thanh Lịch.
+// - Khách (không đăng nhập) chỉ được TẠO yêu cầu báo giá, đúng định dạng. Không ai đọc được dữ liệu của người khác.
+// - Chỉ tài khoản admin trong danh sách bên dưới được xem, đổi trạng thái, xóa yêu cầu.
+// Dán toàn bộ file này vào Firebase Console > Firestore Database > Rules, rồi bấm Publish.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      // Thay bằng email tài khoản admin đã tạo trong Firebase Authentication (có thể thêm nhiều email).
+      return request.auth != null
+        && request.auth.token.email in ['ADMIN_EMAIL@example.com'];
+    }
+
+    function str(v, min, max) {
+      return v is string && v.size() >= min && v.size() <= max;
+    }
+
+    match /yeu_cau_bao_gia/{id} {
+      allow create: if request.resource.data.keys().hasOnly(
+                         ['name', 'phone', 'machine', 'mode', 'location', 'note', 'source', 'status', 'createdAt'])
+                    && str(request.resource.data.name, 1, 100)
+                    && request.resource.data.phone is string
+                    && request.resource.data.phone.matches('^(0|[+]84)[0-9]{9,10}$')
+                    && str(request.resource.data.machine, 1, 60)
+                    && request.resource.data.mode in ['Thuê', 'Mua']
+                    && str(request.resource.data.location, 0, 200)
+                    && str(request.resource.data.note, 0, 1000)
+                    && str(request.resource.data.source, 0, 200)
+                    && request.resource.data.status == 'moi'
+                    && request.resource.data.createdAt == request.time;
+
+      allow read, delete: if isAdmin();
+
+      allow update: if isAdmin()
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+                    && request.resource.data.status in ['moi', 'da_goi', 'xong'];
+    }
+
+    // Mọi thứ khác: đóng.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

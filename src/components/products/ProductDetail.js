@@ -1,90 +1,97 @@
-const ProductDetail = ({ productId }) => {
-  // This would typically come from an API or database
-  const product = {
-    id: productId,
-    name: 'Máy Xúc Đào Doosan DX300LCA',
-    category: 'may-xuc',
-    images: [
-      '/images/maydao1.jpg',
-      '/images/maydao2.jpg',
-      '/images/maydao3.jpg'
-    ],
-    description: 'Máy xúc đào bánh xích 30 tấn',
-    specifications: [
-      { label: 'Model', value: 'DX300LCA' },
-      { label: 'Hãng sản xuất', value: 'Doosan' },
-      { label: 'Trọng lượng', value: '30 tấn' },
-      { label: 'Năm sản xuất', value: '2020' },
-      { label: 'Tình trạng', value: 'Hoạt động tốt' },
-    ],
-    features: [
-      'Động cơ mạnh mẽ, tiết kiệm nhiên liệu',
-      'Cabin rộng rãi, tầm nhìn tốt',
-      'Hệ thống thủy lực hiện đại',
-      'Bảo trì dễ dàng'
-    ]
-  };
+import Image from 'next/image';
+import Link from 'next/link';
+import { SITE } from '@/data/site';
+import { MACHINES } from '@/data/machines';
+import { MachineCard } from '@/components/products/MachineCard';
+import { IconPhone, IconCheck } from '@/components/landing/icons';
+
+const ProductDetail = ({ machine }) => {
+  const others = MACHINES.filter((m) => m.slug !== machine.slug).slice(0, 3);
+  const ask = `/lien-he?may=${encodeURIComponent(machine.name)}#bao-gia`;
 
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-      {/* Product Images */}
-      <div className="aspect-w-16 aspect-h-9 md:aspect-h-6">
-        <img
-          src={product.images[0]}
-          alt={product.name}
-          className="w-full h-full object-cover"
-        />
-      </div>
+    <>
+      <section className="bg-white py-14 sm:py-20">
+        <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-12 lg:gap-14">
+          <div className="lg:col-span-7">
+            <figure>
+            <div className="relative aspect-[3/2] overflow-hidden rounded-md bg-navy-100">
+              <Image src={machine.image} alt={machine.imageAlt} fill priority sizes="(min-width: 1024px) 58vw, 100vw" className="object-cover" />
+            </div>
+            <figcaption className="mt-3 text-sm text-muted">
+              {machine.illustrative ? 'Ảnh minh họa cùng dòng máy.' : 'Ảnh chụp tại bãi máy Thanh Lịch.'}
+            </figcaption>
+            </figure>
 
-      <div className="p-6 md:p-8">
-        {/* Product Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
-          <p className="text-lg text-gray-600">{product.description}</p>
-        </div>
-
-        {/* Specifications */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Thông số kỹ thuật</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {product.specifications.map((spec, index) => (
-              <div key={index} className="flex border-b border-gray-200 py-2">
-                <span className="font-medium text-gray-600 w-1/2">{spec.label}:</span>
-                <span className="text-gray-900">{spec.value}</span>
+            {machine.realPhotos?.length > 0 && (
+              <div className="mt-10">
+                <h2 className="text-xl">Ảnh thực tế</h2>
+                <p className="mt-1 text-sm text-muted">Ảnh chụp máy thật của Thanh Lịch. Nhắn Zalo để xin thêm ảnh.</p>
+                <ul className="mt-4 grid grid-cols-2 gap-3">
+                  {machine.realPhotos.map((src, i) => (
+                    <li key={src} className="relative aspect-[3/2] overflow-hidden rounded-md bg-navy-100">
+                      <Image src={src} alt={`Ảnh thực tế ${machine.name} của Thanh Lịch, ảnh ${i + 1}`} fill sizes="(min-width: 1024px) 29vw, 50vw" className="object-cover" />
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ))}
+            )}
+          </div>
+
+          <div className="lg:col-span-5">
+            <p className="text-lg leading-relaxed">{machine.summary}</p>
+
+            <dl className="mt-8 divide-y divide-navy-100 border-y border-navy-100">
+              {machine.specs.map((s) => (
+                <div key={s.label} className="flex justify-between gap-6 py-3">
+                  <dt className="text-muted">{s.label}</dt>
+                  <dd className="text-right font-semibold text-navy-800">{s.value}</dd>
+                </div>
+              ))}
+              <div className="flex justify-between gap-6 py-3">
+                <dt className="text-muted">Hình thức</dt>
+                <dd className="text-right font-semibold text-navy-800">Cho thuê hoặc bán</dd>
+              </div>
+            </dl>
+
+            <h2 className="mt-10 text-xl">Phù hợp cho</h2>
+            <ul className="mt-4 space-y-3">
+              {machine.uses.map((u) => (
+                <li key={u} className="flex gap-3 text-navy-800">
+                  <IconCheck className="mt-0.5 h-5 w-5 shrink-0 text-gold-600" />
+                  {u}
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-10 rounded-md bg-mist p-6">
+              <p className="font-semibold text-navy-800">Giá thuê, giá bán và lịch trống của máy này</p>
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
+                <a href={`tel:${SITE.phone}`} className="btn btn-gold">
+                  <IconPhone className="h-5 w-5" />
+                  Gọi {SITE.phoneDisplay}
+                </a>
+                <Link href={ask} className="btn btn-ghost-dark">Gửi yêu cầu báo giá</Link>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Features */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Tính năng nổi bật</h2>
-          <ul className="space-y-2">
-            {product.features.map((feature, index) => (
-              <li key={index} className="flex items-start">
-                <svg className="h-6 w-6 text-orange-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Contact Button */}
-        <div className="flex justify-center">
-          <a
-            href="tel:0386684246"
-            className="inline-flex items-center px-8 py-4 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition-colors"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-            </svg>
-            Liên hệ ngay để có giá tốt
-          </a>
-        </div>
-      </div>
-    </div>
+      {others.length > 0 && (
+        <section aria-labelledby="may-khac" className="bg-mist py-16 sm:py-20">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <div className="flex items-end justify-between gap-6">
+              <h2 id="may-khac" className="text-3xl sm:text-4xl">Máy khác tại bãi</h2>
+              <Link href="/san-pham" className="text-link inline-flex min-h-11 items-center">Xem tất cả</Link>
+            </div>
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {others.map((m) => <MachineCard key={m.slug} machine={m} />)}
+            </div>
+          </div>
+        </section>
+      )}
+    </>
   );
 };
 

@@ -1,105 +1,113 @@
 "use client";
 
-import { useState } from 'react';
-import Link from "next/link";
+import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { NAV, SITE } from '@/data/site';
+import { IconPhone, IconMenu, IconClose } from '@/components/landing/icons';
+import Brand from '@/components/Brand';
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
-  const navItems = [
-    { name: 'Trang chủ', href: '/' },
-    { name: 'Sản phẩm', href: '/products' },
-    { name: 'Dịch vụ cho thuê', href: '/buy' },
-    { name: 'Về chúng tôi', href: '/about' },
-    { name: 'Liên hệ', href: '/contact' },
-  ];
+  const headerRef = useRef(null);
+  const toggleRef = useRef(null);
+
+  useEffect(() => setOpen(false), [pathname]);
+
+  // Close the mobile menu with Esc (focus back on the toggle) or by tapping outside the header.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    const onDown = (e) => {
+      if (headerRef.current && !headerRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onDown);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onDown);
+    };
+  }, [open]);
+
+  const isActive = (href) => !href.includes('#') && pathname === href;
 
   return (
-    <header className="bg-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 sm:h-20 md:h-24">
-          <div className="flex-shrink-0 flex items-center">
-            <Link href="/">
-              <img 
-                src="/images/logo.png" 
-                alt="ThanhLich Logo" 
-                className="h-12 w-24 sm:h-16 sm:w-32 md:h-20 md:w-40 lg:h-24 lg:w-54 object-center"
-              />
-            </Link>
-          </div>
+    <header ref={headerRef} className="sticky top-0 z-40 border-b border-navy-100 bg-white">
+      <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-6 px-5 sm:px-8">
+        <Link href="/" aria-label="Thanh Lịch, về trang chủ" className="rounded-sm">
+          <Brand />
+        </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-4 lg:space-x-8">
-            {navItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="text-gray-900 hover:text-orange-500 transition-colors duration-200 font-semibold text-sm lg:text-base"
-              >
-                {item.name}
-              </a>
-            ))}
-          </nav>
-
-          {/* CTA Button */}
-          <div className="hidden md:block">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Tìm kiếm..."
-                className="pl-4 pr-10 py-1.5 sm:py-2 text-sm lg:text-base border border-gray-300 rounded-md focus:outline-none focus:border-orange-500 w-32 sm:w-40 md:w-48 lg:w-64"
-              />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-orange-500">
-                <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-900 p-2"
-            >
-              {isMenuOpen ? (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              {navItems.map((item) => (
-                <a
-                  key={item.name}
+        <nav aria-label="Menu chính" className="hidden lg:block">
+          <ul className="flex items-center gap-1">
+            {NAV.map((item) => (
+              <li key={item.href}>
+                <Link
                   href={item.href}
-                  className="text-gray-900 hover:text-orange-500 block px-3 py-2 text-base font-medium"
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                  className="relative inline-flex min-h-11 items-center rounded-sm px-3 font-medium text-navy-800 transition-colors hover:text-navy-700 aria-[current=page]:font-semibold after:absolute after:inset-x-3 after:bottom-1.5 after:h-0.5 after:scale-x-0 after:bg-gold-500 after:transition-transform hover:after:scale-x-100 aria-[current=page]:after:scale-x-100"
                 >
                   {item.name}
-                </a>
-              ))}
-              <div className="px-3 py-2">
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm..."
-                  className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-orange-500"
-                />
-              </div>
-            </div>
-          </div>
-        )}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <a href={`tel:${SITE.phone}`} className="btn btn-gold hidden !px-4 sm:inline-flex">
+            <IconPhone className="h-5 w-5" />
+            {SITE.phoneDisplay}
+          </a>
+          <button
+            ref={toggleRef}
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="menu-di-dong"
+            className="inline-flex h-12 w-12 items-center justify-center rounded-sm text-navy-800 hover:bg-mist lg:hidden"
+          >
+            <span className="sr-only">{open ? 'Đóng menu' : 'Mở menu'}</span>
+            {open ? <IconClose className="h-6 w-6" /> : <IconMenu className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
+
+      {open && (
+        <nav id="menu-di-dong" aria-label="Menu chính" className="border-t border-navy-100 bg-white lg:hidden">
+          <ul className="mx-auto max-w-7xl px-5 py-3 sm:px-8">
+            {NAV.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                  className="flex min-h-12 items-center border-b border-navy-100 text-lg font-medium text-navy-800 aria-[current=page]:font-bold"
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+            <li className="flex flex-col gap-3 pb-2 pt-4 sm:flex-row">
+              <a href={`tel:${SITE.phone}`} className="btn btn-gold">
+                <IconPhone className="h-5 w-5" />
+                Gọi {SITE.phoneDisplay}
+              </a>
+              <a href={SITE.zalo} target="_blank" rel="noopener noreferrer" className="btn btn-ghost-dark">
+                <img src="/images/zalo-icon.svg" alt="" className="h-5 w-5" />
+                Nhắn Zalo
+              </a>
+            </li>
+          </ul>
+        </nav>
+      )}
     </header>
   );
 };
