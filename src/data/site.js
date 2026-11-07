@@ -9,7 +9,7 @@ export const SITE = {
   phoneDisplay: '0386 684 246',
   zalo: 'https://zalo.me/0386684246',
   messenger: 'https://www.facebook.com/thanh.lich.830842',
-  email: 'contact@thanhlich.com',
+  // Chưa có email theo tên miền. Khi có, thêm lại `email: '...'` rồi hiện trong Footer và Location.
   // Địa chỉ theo đơn vị hành chính mới từ 1/7/2025 (Nghị quyết 1683/NQ-UBTVQH15):
   // thị trấn Hùng Sơn, huyện Đại Từ cũ nay thuộc xã Đại Phúc, tỉnh Thái Nguyên.
   address: 'Số 283, xã Đại Phúc, tỉnh Thái Nguyên',
